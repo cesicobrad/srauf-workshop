@@ -1,4 +1,4 @@
-"""Local workbench and a durable bridge to actual n8n workflows."""
+"""Local workbench and a durable bridge to n8n workflows."""
 from __future__ import annotations
 
 import asyncio
@@ -218,7 +218,7 @@ def create_app(store=None,knowledge=None,*,worker=True):
                 "live_crm":live_crm,"gmail_inbox":gmail_inbox,"customer_records":"local",
                 "verification":json.loads(report.read_text(encoding="utf-8")) if report.exists() else None,
                 "connections":[
-                    {"name":"n8n orchestration","state":"Connected" if engine["ready"] else "Waiting","note":"Actual local n8n webhooks. Execution IDs appear in the audit trail."},
+                    {"name":"n8n orchestration","state":"Connected" if engine["ready"] else "Waiting","note":"Local n8n webhooks. Execution IDs appear in the audit trail."},
                     {"name":"Customer records","state":"Saved locally","note":"Customer history, enquiries, photos, quotes and replies persist on this device. CSV export is available. No external CRM account is required."},
                     *([{"name":"HubSpot CRM · optional","state":next((i['state'] for i in store.feature_snapshot()['integration_status'] if i['name']=='hubspot'),'not_connected'),"note":"Explicitly enabled contact upsert through n8n. Local customer records remain available independently."}] if live_crm else []),
                     {"name":"Email delivery","state":"Gmail enabled · check status" if live_gmail else "SMTP configured · unverified" if live_email else "Local preview inbox","note":"External delivery is opt-in and limited to addresses you allowlist. No email leaves this machine in preview mode."},

@@ -1,0 +1,292 @@
+{
+  "id": "sraufDelivery26",
+  "name": "Šrauf · Approval → delivery → recovery",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "0795df0e-37e5-4be7-a222-99dcda3247c6",
+      "name": "Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -247
+      ],
+      "parameters": {
+        "content": "## Deliver only what a person approved\nThe durable outbox owns the exact approved message. Preview delivery is atomic. Ambiguous external mail sends stop for a manual provider check rather than being blindly repeated.",
+        "width": 740,
+        "height": 170,
+        "color": 4
+      }
+    },
+    {
+      "id": "e7e30d50-7387-4f21-a699-2334bbaaac84",
+      "name": "Saved job received",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "workshop-send",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "webhookId": "8b9116a1-9c63-4b2e-ab91-9c739f41360d"
+    },
+    {
+      "id": "be20cc73-f682-410c-a37d-8310cb5c4dc4",
+      "name": "Authenticated bridge?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2eedd7dc-15b9-4a4c-abe2-8f79ce968299",
+              "leftValue": "={{ $json.headers['x-workshop-key'] === $env.WORKSHOP_BRIDGE_TOKEN }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "07def30c-4914-4aa8-af29-8893189dfd22",
+      "name": "Reject unauthenticated request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge authentication required\"}) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "0e761037-730f-4956-ad2e-ebe941e9456a",
+      "name": "Deliver the approved outbox item",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/deliver",
+        "options": {
+          "timeout": 20000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id)}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "61a9212f-2ffa-498e-acac-b63990f52fae",
+      "name": "Return recorded result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "b28a6dd4-ce93-4557-a576-49b2f32debc1",
+      "name": "Record the recoverable failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        190
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/failure",
+        "options": {
+          "timeout": 5000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id),error:'The '+\"delivery\"+' step failed after retries. The original job and approved message are saved. Restore the service and retry from the workshop desk.'}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "1563268a-648d-4dfd-afd3-0d67e77b1e9c",
+      "name": "Return retryable failure",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,saved_for_retry:true}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    },
+    {
+      "id": "0402bb60-7ff9-4301-aef6-a7cd39bfee0f",
+      "name": "Return bridge unavailable",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        380
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge unavailable; the durable job remains saved.\"}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Saved job received": {
+      "main": [
+        [
+          {
+            "node": "Authenticated bridge?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Authenticated bridge?": {
+      "main": [
+        [
+          {
+            "node": "Deliver the approved outbox item",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject unauthenticated request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deliver the approved outbox item": {
+      "main": [
+        [
+          {
+            "node": "Return recorded result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record the recoverable failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record the recoverable failure": {
+      "main": [
+        [
+          {
+            "node": "Return retryable failure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return bridge unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "c7732f7b-8407-4b87-a2a8-656d4e445a47"
+}

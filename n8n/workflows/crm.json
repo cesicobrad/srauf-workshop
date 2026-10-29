@@ -1,0 +1,292 @@
+{
+  "id": "sraufCrmSync2026",
+  "name": "Šrauf · Saved enquiry → HubSpot contact",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "f59ea788-8529-452b-ad3b-0c12f48e2205",
+      "name": "Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -247
+      ],
+      "parameters": {
+        "content": "## Save an authorized test contact\nThe backend checks the test-contact allowlist and upserts by email. A provider-confirmed contact ID is saved with this execution. Credentials stay in the backend; this workflow receives only a durable task ID.",
+        "width": 740,
+        "height": 170,
+        "color": 4
+      }
+    },
+    {
+      "id": "6619a939-d9d8-488c-aec1-4f7198764530",
+      "name": "Saved job received",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "workshop-crm",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "webhookId": "3c9388b8-9a10-4ea5-a9a9-b46e0fce9c9f"
+    },
+    {
+      "id": "37173023-fc74-4d2c-a21a-7f1e5c843126",
+      "name": "Authenticated bridge?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f19e6536-b1ac-4548-a4df-6061e6c1d2a1",
+              "leftValue": "={{ $json.headers['x-workshop-key'] === $env.WORKSHOP_BRIDGE_TOKEN }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "1c93bee3-d4e0-417a-ab6f-e11cf3ef569d",
+      "name": "Reject unauthenticated request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge authentication required\"}) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "f372a98a-2657-483f-ab5d-41f3a8daf9de",
+      "name": "Upsert the authorized HubSpot contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/crm",
+        "options": {
+          "timeout": 20000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id)}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "fafa08fe-98ae-45d2-a705-f0d7501818c7",
+      "name": "Return recorded result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "0812e267-53f4-44a4-a94e-cb35e8971ca2",
+      "name": "Record the recoverable failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        190
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/failure",
+        "options": {
+          "timeout": 5000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id),error:'The '+\"crm\"+' step failed after retries. The original job and approved message are saved. Restore the service and retry from the workshop desk.'}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "0875dd8a-dfe2-472c-a623-5e4251d10625",
+      "name": "Return retryable failure",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,saved_for_retry:true}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    },
+    {
+      "id": "035c1e7e-6d83-4f28-aa7c-b2c2f2f87ee3",
+      "name": "Return bridge unavailable",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        380
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge unavailable; the durable job remains saved.\"}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Saved job received": {
+      "main": [
+        [
+          {
+            "node": "Authenticated bridge?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Authenticated bridge?": {
+      "main": [
+        [
+          {
+            "node": "Upsert the authorized HubSpot contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject unauthenticated request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert the authorized HubSpot contact": {
+      "main": [
+        [
+          {
+            "node": "Return recorded result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record the recoverable failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record the recoverable failure": {
+      "main": [
+        [
+          {
+            "node": "Return retryable failure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return bridge unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "c936a6ae-fd31-4bb0-a64d-7f296fe33c72"
+}

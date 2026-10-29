@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+  <title>Šrauf — From question to handled enquiry</title>
+  <link rel="icon" href="/assets/icon.svg"><link rel="stylesheet" href="/assets/style.css"><link rel="stylesheet" href="/assets/ux.css">
+</head>
+<body>
+<a class="skip" href="#workspace">Skip to demo</a>
+<header class="topbar wrap">
+  <a class="brand" href="/" aria-label="Šrauf workshop demo home"><img src="/assets/icon.svg" alt="" width="40" height="40"><span>šrauf<span class="brand-sub">THE CONNECTED WORKSHOP</span></span></a>
+  <div class="top-status"><span class="dot" id="engine-dot"></span><span id="engine-label">Connecting to n8n</span></div>
+  <span class="demo-tag">Fictional business · local demo</span>
+</header>
+<main>
+<section class="hero wrap">
+  <div class="hero-copy"><p class="eyebrow">CUSTOMER REQUESTS. CLEAR NEXT STEPS.</p>
+    <h1>From a question<br>to <em>taken care of.</em></h1>
+    <p class="hero-lead">A customer sends a repair request. The workshop reviews it, prepares a quote and gets a decision. Follow one request through both sides.</p>
+    <a href="#workspace" class="button primary" id="start-tour">Try the complete demo <span aria-hidden="true">→</span></a>
+    <p class="hero-note">Built by Obrad Ćešić · Fictional workshop · Local preview</p>
+  </div>
+  <div class="hero-art" aria-hidden="true"><span class="art-note">A LITTLE LESS ADMIN.<br>A LITTLE MORE WORKSHOP.</span>
+    <svg viewBox="0 0 530 290"><g stroke="#d3daed" stroke-width="1"><path d="M0 235H530M0 258H530M0 281H530"/></g><g fill="none" stroke="#3157df" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"><circle cx="132" cy="192" r="66"/><circle cx="405" cy="192" r="66"/><path d="M132 192l75-130 79 130H132l117-112h117l39 112M194 62h47M352 40h32l-18 40"/><path d="M286 192l-16-76" stroke-width="5"/><circle cx="286" cy="192" r="12"/><path d="M286 192l28 17h13M270 116l-13-8" stroke-width="5"/></g><path d="M223 53l-15 18-12-8 7-18z" fill="#e9a86f"/><g transform="translate(335 7) rotate(7)"><rect width="129" height="60" rx="9" fill="#ffffff"/><circle cx="21" cy="21" r="6" fill="#3157df"/><path d="M35 20h71M15 39h79" stroke="#c8d0e4" stroke-width="4"/></g><g transform="translate(44 69) rotate(-8)"><rect width="123" height="54" rx="9" fill="#f4bc82"/><path d="M16 17h84M16 34h57" stroke="#9b653b" stroke-width="4"/></g></svg>
+    <div class="art-flow"><span>Ask</span><i>→</i><span>Review</span><i>→</i><span>Reply</span></div>
+  </div>
+</section>
+
+<section class="wrap workspace" id="workspace" aria-label="Interactive connected workshop demo">
+  <div class="workspace-heading"><div><p class="eyebrow">THE WORKING DEMO</p><h2>One repair. Start to finish.</h2></div><span class="save-indicator">Your work is saved on this device</span></div>
+  <section id="journey" class="journey" aria-label="Guided demo"></section>
+  <details class="demo-options" id="demo-options"><summary>Explore other scenarios &amp; saved examples</summary><label for="demo-customer">View a saved example request</label><select id="demo-customer"><option value="">New customer conversation</option></select><p class="micro">This selector changes the example shown in Customer view.</p><div class="scenario-bar" aria-label="Other demo scenarios">
+    <button class="scenario" data-scenario="ask"><span>01</span><b>Ask in Slovenian</b><small>Answer from approved facts</small></button>
+    <button class="scenario" data-scenario="repair"><span>02</span><b>Request a custom repair</b><small>Pass the whole conversation</small></button>
+    <button class="scenario" data-scenario="recovery"><span>03</span><b>Break it. Recover it.</b><small>Keep the approved reply</small></button>
+    <button class="scenario" data-scenario="knowledge"><span>04</span><b>Change the price</b><small>The owner stays in control</small></button>
+  </div></details>
+  <div id="guide" class="guide" role="status" hidden></div>
+  <nav class="tabs" aria-label="Demo views" role="tablist">
+    <button id="tab-customer" role="tab" aria-selected="true" aria-controls="panel-customer" data-tab="customer">Customer view</button>
+    <button id="tab-desk" role="tab" aria-selected="false" aria-controls="panel-desk" data-tab="desk">Workshop desk <span id="desk-count" class="count">0</span></button>
+    <button id="tab-proof" role="tab" aria-selected="false" aria-controls="panel-proof" data-tab="proof">Proof &amp; connections</button>
+  </nav>
+
+  <div id="panel-customer" role="tabpanel" aria-labelledby="tab-customer" class="panel customer-layout">
+    <section id="request-progress" class="request-progress" aria-label="Your repair request" hidden></section>
+    <details id="conversation-area" class="conversation-workspace" open><summary>Ask the workshop <span>Prices, hours or a repair request</span></summary><div class="conversation-layout">
+    <aside class="customer-side"><details class="shop-card"><summary>Prices &amp; opening hours <span>Šrauf · Ljubljana</span></summary>
+      <dl class="shop-facts"><div><dt>Full service</dt><dd id="shop-price">€79</dd></div><div><dt>Basic service</dt><dd id="shop-basic">€39</dd></div><div><dt>Opening hours</dt><dd id="shop-hours">Loading…</dd></div></dl>
+    </details></aside>
+    <section class="chat-card" aria-label="Customer conversation"><header class="chat-header"><div class="avatar">Š</div><div><h3>Ask Špica</h3><p>Answers from the workshop’s approved information</p></div><label class="language"><span class="sr-only">Conversation language</span><select id="language"><option value="en">English</option><option value="sl">Slovenščina</option><option value="hr">Hrvatski / srpski</option></select></label></header>
+      <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-label="Conversation"><div class="bubble assistant">Hi! Ask me about service prices or opening hours. For a custom repair, I’ll pass your question to the workshop.</div></div>
+      <div class="chat-suggestions"><button data-question="How much is a full service?">Full service price</button><button data-question="Are you open on Sunday?">Opening hours</button><button data-question="My cargo-bike frame is cracked. Can someone inspect it?">A custom repair</button></div>
+      <form class="chat-compose" id="chat-form"><label for="question" class="sr-only">Your question</label><input id="question" maxlength="600" placeholder="Ask about your bike…" autocomplete="off" required><button class="send-button" aria-label="Send question" type="submit">↑</button></form>
+      <p class="chat-foot" id="chat-mode">Answers use workshop-approved information.</p>
+    </section>
+    <section class="handoff-card" id="handoff-card" hidden><p class="eyebrow">A MECHANIC CAN HELP</p><h3>Send your repair request.</h3><p>Your conversation and photos go with it.</p>
+      <form id="handoff-form"><label for="lead-name">Your name</label><input id="lead-name" name="name" value="Maja Novak" maxlength="100" required><label for="lead-email">Email</label><input id="lead-email" name="email" type="email" value="maja@customer.example" maxlength="254" required><label for="lead-question">What should the mechanic know?</label><textarea id="lead-question" rows="3" minlength="5" maxlength="2000" placeholder="Tell us about the repair…" required></textarea><button type="submit" class="button primary" id="lead-submit">Send to the workshop <span>↗</span></button></form>
+      <div id="handoff-result" class="notice success" hidden></div><details id="duplicate-check" hidden><summary>Check duplicate handling</summary><button class="text-button" id="duplicate-submit" hidden>Submit the same request again to check duplicates</button></details>
+    </section>
+    </div></details>
+    <section class="customer-mailbox" id="mailbox-panel" hidden><div class="section-title"><div><p class="eyebrow">YOUR MESSAGES</p><h3>Workshop replies</h3></div><span class="pill">Preview inbox</span></div><div id="mailbox"></div></section>
+  </div>
+
+  <div id="panel-desk" role="tabpanel" aria-labelledby="tab-desk" class="panel" hidden>
+    <div class="desk-intro"><div><h3>The workshop’s side of the conversation.</h3><p>Review the request, edit the draft and decide what gets sent.</p></div><a class="text-link" href="/api/export.csv" download>Export enquiries ↗</a></div>
+    <div class="desk-stats" id="desk-stats"></div>
+    <div class="desk-layout"><aside class="enquiry-list" id="enquiry-list" aria-label="Enquiries"></aside><section class="enquiry-detail" id="enquiry-detail" aria-label="Selected enquiry"><p class="empty">Send a repair request from the customer view to see the full handover here.</p></section></div>
+    <section class="owner-section"><div class="section-title"><div><p class="eyebrow">OWNER CONTROLS</p><h3>Change the facts. Keep the answers current.</h3></div><span class="pill" id="knowledge-version">Version 1</span></div><p class="muted">Publish a new price or opening time. The next answer uses the new version; earlier conversations retain their history.</p>
+      <form id="knowledge-form" class="knowledge-grid"><div><label for="full-price">Full service (€)</label><input id="full-price" type="number" min="0.01" max="10000" step="0.01" required></div><div><label for="basic-price">Basic service (€)</label><input id="basic-price" type="number" min="0.01" max="10000" step="0.01" required></div><div class="wide"><label for="hours-en">Opening hours · English</label><input id="hours-en" maxlength="300" required></div><div class="wide"><label for="hours-sl">Opening hours · Slovenian</label><input id="hours-sl" maxlength="300" required></div><div class="wide"><label for="hours-hr">Opening hours · Croatian / Serbian</label><input id="hours-hr" maxlength="300" required></div><div class="wide"><label for="policy-notes">Workshop repair policy</label><textarea id="policy-notes" rows="2" maxlength="1000"></textarea></div><div class="wide knowledge-actions"><button class="button primary" type="submit">Publish approved facts <span>↑</span></button><button class="button secondary" id="conflict-toggle" type="button">Add a conflicting leaflet</button></div></form>
+      <div id="conflict-notice" class="notice warning" hidden>Demo scenario: a hypothetical unreviewed leaflet has been flagged as conflicting. The assistant will escalate price questions until you resolve the flag. Publishing approved facts clears this scenario. This is not an automatic document-auditing feature.</div>
+    </section>
+    <section class="recovery-section"><div><p class="eyebrow">TEST THE MESSY PARTS</p><h3>Saved work survives a failed connection.</h3><p class="muted">These are explicit demo controls. They do not interrupt a real business service.</p></div><div class="recovery-actions"><button class="button secondary" id="pause-delivery">Pause preview delivery</button><button class="button secondary" id="pause-automation">Pause automation</button><button class="button secondary" id="advance-clock">Advance demo clock 3 days</button></div></section>
+  </div>
+
+  <div id="panel-proof" role="tabpanel" aria-labelledby="tab-proof" class="panel" hidden>
+    <div class="proof-lead"><p class="eyebrow">UNDER THE HOOD</p><h3>How it works and what’s tested.</h3><p>Every request is saved, every reply is approved by a person, and n8n moves the work between them.</p></div>
+    <div id="connections" class="connections"></div>
+    <section class="proof-card"><h3>How this preview works</h3><p id="mode-copy">Approved facts and labelled draft templates. No AI calls.</p><p id="clock-label" class="micro">Real clock · preview delivery</p><p class="muted">The workshop and customers are fictional. Messages go to a preview inbox on this device, and accepting a quote takes no payment.</p></section>
+    <div class="proof-columns"><section class="proof-card"><h3>Verified in this build</h3><div id="verification"><p class="muted">Verification is still in progress.</p></div></section><section class="proof-card"><h3>The useful hard cases</h3><ul class="plain-list"><li>A repeated submission creates one enquiry.</li><li>A double approval does not create two outgoing messages.</li><li>A failed job keeps the exact approved reply for recovery.</li><li>An incoming reply suppresses pending follow-ups.</li><li>Conflicting prices are escalated instead of guessed.</li><li>Changed owner facts take effect without restarting.</li></ul></section></div>
+    <section class="proof-card architecture"><p class="eyebrow">THE DELIVERY PATH</p><div class="path"><span>Customer chat</span><i>→</i><span>Saved enquiry</span><i>→</i><span>n8n</span><i>→</i><span>Staff approval</span><i>→</i><span>Persistent outbox</span><i>→</i><span>Preview / SMTP</span></div><p class="micro">Default: no paid API requests, no external email and no publication. SMTP is opt-in, allowlisted and stops for a manual check if delivery becomes uncertain.</p><a id="n8n-link" href="http://127.0.0.1:5798" target="_blank" rel="noopener" class="text-link">Open the local n8n editor ↗</a></section>
+    <section class="proof-card"><h3>Activity you can trace</h3><div id="global-events" class="audit-list"></div></section>
+  </div>
+</section>
+</main>
+<footer class="wrap footer"><span>Šrauf is a fictional business. This is a working portfolio demonstration.</span><span>Design &amp; build · Obrad Ćešić</span></footer>
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="/assets/features.js" defer></script>
+<script src="/assets/journey.js" defer></script>
+<script src="/assets/app.js" defer></script>
+</body>
+</html>

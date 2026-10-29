@@ -1,0 +1,292 @@
+{
+  "id": "sraufIntake2026",
+  "name": "Šrauf · Enquiry → staff review",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "edd67967-f5c4-4581-a042-be23210c2df9",
+      "name": "Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -247
+      ],
+      "parameters": {
+        "content": "## A saved enquiry becomes a staff draft\nThe workbench persists the enquiry and its transcript before calling this workflow. The callback is idempotent. In offline mode the draft is a labelled template, not generated AI text.",
+        "width": 740,
+        "height": 170,
+        "color": 4
+      }
+    },
+    {
+      "id": "d7b8430d-7084-4fdc-a748-7b79530f3ebb",
+      "name": "Saved job received",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "workshop-intake",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "webhookId": "b0c1a15b-e99a-4f97-a954-8e553244eabe"
+    },
+    {
+      "id": "f59b2ac1-9c4c-490f-aa84-5326fa008c22",
+      "name": "Authenticated bridge?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ce75fc00-6f82-46d2-ae48-fbb4cc1a4824",
+              "leftValue": "={{ $json.headers['x-workshop-key'] === $env.WORKSHOP_BRIDGE_TOKEN }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "542b3170-3497-4914-a24a-17db7f2d67cd",
+      "name": "Reject unauthenticated request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        480,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge authentication required\"}) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "554976c8-def0-4000-a955-9d7d25ff673e",
+      "name": "Prepare a staff review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/draft",
+        "options": {
+          "timeout": 20000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id)}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "8a806a2e-a8bd-4fdb-aa05-23945af42e92",
+      "name": "Return recorded result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "3743c904-4f72-4194-aa53-a61e531abc28",
+      "name": "Record the recoverable failure",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        190
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WORKSHOP_API_URL }}/internal/failure",
+        "options": {
+          "timeout": 5000
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.WORKSHOP_BRIDGE_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({task_id:$('Saved job received').first().json.body.task_id,execution_id:String($execution.id),error:'The '+\"intake\"+' step failed after retries. The original job and approved message are saved. Restore the service and retry from the workshop desk.'}) }}"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "728d953e-3806-4bb4-ae78-26acebccd9d6",
+      "name": "Return retryable failure",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        190
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,saved_for_retry:true}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    },
+    {
+      "id": "19fdfab3-415c-4d7b-a67f-62ffd716b3ef",
+      "name": "Return bridge unavailable",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        380
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ok:false,error:\"Bridge unavailable; the durable job remains saved.\"}) }}",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Saved job received": {
+      "main": [
+        [
+          {
+            "node": "Authenticated bridge?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Authenticated bridge?": {
+      "main": [
+        [
+          {
+            "node": "Prepare a staff review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject unauthenticated request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare a staff review": {
+      "main": [
+        [
+          {
+            "node": "Return recorded result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Record the recoverable failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record the recoverable failure": {
+      "main": [
+        [
+          {
+            "node": "Return retryable failure",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return bridge unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "0ceff960-be52-4b42-a55a-b1e13e1336c9"
+}

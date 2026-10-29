@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-29T18:57:33+00:00",
+  "passed": 77,
+  "total": 77,
+  "live_ai": false,
+  "n8n_e2e": true,
+  "summary": "Local acceptance checks for approvals, recovery, sanitized photos, exact quote totals, customer decisions, staff ownership, overdue alerts, approved answers and Gmail/HubSpot adapter contracts. Provider checks use simulated responses; external accounts remain unverified.",
+  "n8n_steps": 45,
+  "n8n_at": "2026-10-25T09:43:40.788Z",
+  "n8n_execution_ids": [
+    "11",
+    "13",
+    "15",
+    "16",
+    "17",
+    "18"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "srauf-connected-demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node scripts/start.mjs",
+    "build:workflows": "node n8n/build.mjs"
+  },
+  "engines": {"node": ">=24"}
+}

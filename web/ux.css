@@ -1,0 +1,83 @@
+/* The guided journey and customer-focused layout. */
+button:disabled{cursor:not-allowed}
+.button{font-size:14px;min-height:46px;border-radius:9px;padding:13px 18px}
+label{font-size:13px}input,textarea,select{font-size:15px}.micro{font-size:12px!important}
+.eyebrow{font-size:11px}.hero-lead{font-size:16px;line-height:1.8}.hero-note{font-size:12px}
+.brand-sub{font-size:9px}.top-status{font-size:12px}.demo-tag{font-size:11px}
+.hero h1 em{color:var(--green)}.art-note{font-size:10px}.hero-art{border-radius:20px}
+.workspace-heading h2{font-size:32px}.save-indicator{font-size:12px}.workspace{border-top:1px solid var(--line);padding-top:28px}
+.journey{background:white;border:1px solid var(--line);border-radius:13px;margin:24px 0 16px;overflow:hidden}
+.journey-steps{list-style:none;margin:0;padding:18px 24px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;border-bottom:1px solid var(--line);background:#fafbfe}
+.journey-steps li{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.journey-steps li>span{display:grid;place-items:center;width:27px;height:27px;border:1px solid #ccd2df;border-radius:50%;flex-shrink:0;font-size:12px}
+.journey-steps .current{color:var(--green);font-weight:700}.journey-steps .current>span{background:var(--green);border-color:var(--green);color:white}
+.journey-steps .done>span{background:#e7edff;border-color:#c0cef8;color:var(--green)}
+.journey-content{display:flex;justify-content:space-between;align-items:center;gap:32px;padding:25px}
+.journey-content .eyebrow{font-size:10px;margin-bottom:7px}.journey-content h3{font-size:23px;letter-spacing:-.5px;margin:0 0 9px}
+.journey-content p:last-child{font-size:14px;color:var(--muted);max-width:610px;margin:0}
+.journey-actions{flex-shrink:0;display:flex;align-items:stretch;flex-direction:column;gap:3px}.journey>.micro{padding:0 25px 20px}
+.demo-options{border-bottom:1px solid var(--line);padding:12px 0 18px;margin:0 0 16px}
+summary{cursor:pointer;font-weight:650}.demo-options>summary{font-size:13px;color:var(--muted)}.demo-options>select{max-width:500px}
+details>summary span{font-size:12px;font-weight:400;color:var(--muted);margin-left:8px}
+summary:focus-visible{outline:3px solid #7d97ff;outline-offset:4px}
+.scenario-bar{margin:20px 0 0}.scenario b{font-size:14px}.scenario small{font-size:12px}
+.tabs{overflow:visible}.tabs button{font-size:14px;min-height:48px}.count{font-size:12px}
+.customer-layout{display:flex;flex-direction:column;gap:20px}
+.conversation-workspace{order:3;border:1px solid var(--line);border-radius:12px;background:#fff;padding:20px}
+.conversation-workspace>summary{font-size:16px}
+.conversation-layout{display:grid;grid-template-columns:1.18fr .82fr;gap:22px;margin-top:20px;align-items:start}
+.chat-card{order:0;min-height:490px;max-height:640px}.customer-side{order:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+.shop-card{display:block;border:1px solid var(--line);border-radius:10px;padding:17px;background:#f8f9fc;color:var(--ink);min-width:0}
+.shop-card>summary{font-size:14px}.shop-card>summary span{display:block;margin:3px 0 0 18px}.shop-facts{margin:16px 0 0}
+.shop-facts>div{border-color:var(--line);gap:20px}.shop-facts dt{font-size:13px;color:var(--muted)}.shop-facts dd{font-size:15px}.shop-facts>div:last-child dd{font-size:13px}
+.chat-header h3{font-size:17px}.chat-header p{font-size:12px}.language{margin-block:0}.language select{font-size:13px;padding:8px;max-width:125px}
+.bubble{font-size:14px;line-height:1.75}.bubble .citation{font-size:12px}.chat-suggestions button{font-size:12px;min-height:40px}
+.chat-compose input{font-size:15px}.send-button{min-width:40px;height:40px}.chat-foot{font-size:12px}
+.handoff-card{padding:22px;scroll-margin-top:20px}.handoff-card h3{font-size:23px}.handoff-card>p{font-size:14px}.handoff-card .eyebrow{font-size:10px;color:var(--green)}
+.handoff-card form{margin-top:18px}.handoff-card .button{width:100%}.handoff-card details{margin-top:12px;font-size:12px}
+.request-progress{order:0;border:1px solid #cdd7f7;background:#fff;border-radius:12px;padding:22px;display:flex;gap:20px;align-items:center;justify-content:space-between;scroll-margin-top:20px}
+.request-progress h3{font-size:23px;letter-spacing:-.5px;margin:0 0 8px}.request-progress p:last-child{font-size:14px;color:var(--muted);margin:0}.request-progress .eyebrow{font-size:10px}.request-progress .button{flex-shrink:0}
+.customer-mailbox{order:2;border-radius:12px}.quote-receipts{order:1;scroll-margin-top:20px}
+.section-title .eyebrow{font-size:11px}.section-title h3{font-size:23px}.pill{font-size:12px}.empty{font-size:14px}
+.mail-item{background:#fff}.mail-meta{font-size:12px}.mail-item h4{font-size:16px}.mail-body{font-size:14px}
+.message-history,.quote-history,.quote-question{margin-top:20px}.message-history>summary,.quote-history>summary,.quote-question>summary{font-size:13px;color:var(--muted)}
+.notice{font-size:14px}.desk-intro h3{font-size:24px}.desk-intro p{font-size:14px}.text-link{font-size:13px}
+.queue-filters{flex-wrap:wrap}.queue-filters label{font-size:13px}.queue-filters select,.work-form select{font-size:14px}
+.stat span{font-size:12px}.enquiry-button strong{font-size:14px}.enquiry-button small{font-size:12px}.status{font-size:12px}
+.detail-top h3{font-size:25px}.detail-top p{font-size:13px}.detail-question{font-size:15px}.detail-label{font-size:11px}
+.transcript,.reply-editor,.audit-disclosure{border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-top:16px;font-size:13px}
+.transcript p{font-size:13px}.transcript strong{font-size:11px}.draft-note{font-size:12px;margin-top:15px}
+.audit-disclosure .audit-list{max-height:360px;overflow:auto}.audit-item p{font-size:13px}.audit-item time{font-size:12px}
+.overdue-notice strong{font-size:14px}.overdue-notice p{font-size:12px}.photo-thumb span{font-size:11px}
+.quote-builder{scroll-margin-top:20px}.quote-builder h3{font-size:23px}.quote-builder .section-title{flex-wrap:wrap}
+.quote-line{grid-template-columns:minmax(0,1fr) 72px 95px 30px}.quote-line label{font-size:12px}.remove-line{height:44px}
+.quote-preview-total{font-size:14px}.quote-preview-total strong{font-size:21px}.quote-table{font-size:14px}.quote-table th{font-size:12px}.quote-table tfoot th{font-size:12px}
+.saved-quote{padding:20px;scroll-margin-top:20px}.saved-quote h4{font-size:17px}
+.quote-revision{margin-top:18px;font-size:13px}.quote-revision>summary{color:var(--muted)}
+#customer-quotes{display:block}.customer-quote{padding:0;background:white;border:0;border-radius:0;margin-top:23px}.customer-quote h4{font-size:36px}.customer-quote>p{font-size:14px}
+.quote-decisions{display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}.quote-decisions .button{margin-top:0}.quote-question{flex:1;min-width:180px;margin-top:11px}.quote-question .button{margin-top:12px}
+.crm-detail>summary{font-size:14px}.crm-detail .button{font-size:13px}.customer-record-stats span{font-size:12px}.optional-crm{font-size:13px}
+.learning-layout h3{font-size:23px}.approved-answer{font-size:14px}.owner-settings{border:1px solid var(--line);border-radius:10px;background:white;padding:20px;margin-top:25px}
+.owner-section{margin:0;padding:23px 0 0;border:0;background:white}.owner-section .section-title{flex-wrap:wrap}
+.recovery-section{margin:0;border:0;padding:24px 0 0}.recovery-section h3{font-size:23px}.recovery-actions button{font-size:13px}
+.connection h4{font-size:16px}.connection p{font-size:13px}.proof-card h3{font-size:23px}.plain-list{font-size:14px}.path span{font-size:13px}.verification-number small{font-size:14px}
+.muted{font-size:14px}.footer{font-size:12px}.toast{font-size:14px;background:#27334f}.toast.error{background:#963e32}
+@media(max-width:1050px){.journey-content{align-items:flex-start;gap:20px}.journey-actions{max-width:240px}.journey-steps{gap:10px;padding:16px 20px}.journey-steps li{font-size:12px}.chat-header{flex-wrap:wrap}.chat-header .language{width:100%;margin:5px 0 0 48px}.language select{max-width:100%}.quote-line{grid-template-columns:minmax(0,1fr) 65px 83px 28px}}
+@media(max-width:760px){
+  .hero{padding-top:24px;padding-bottom:30px}.hero-art{display:none}.hero h1{font-size:48px}.hero-lead{font-size:15px}.hero-note{font-size:11px}.top-status{font-size:11px}.brand-sub{font-size:8px}.workspace-heading h2{font-size:27px}
+  .journey{margin-top:20px}.journey-steps{grid-template-columns:1fr 1fr;padding:16px;gap:12px}.journey-content{padding:20px;flex-direction:column;gap:18px}.journey-content h3{font-size:22px}.journey-actions{max-width:none;width:100%}.journey-actions .text-button{align-self:center}
+  .scenario b{font-size:13px}.scenario small{font-size:12px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;overflow:visible}.tabs button{font-size:13px;padding:12px 0;white-space:normal;min-height:48px}
+  .conversation-workspace{padding:16px}.conversation-workspace>summary span{display:block;margin:5px 0 0 18px}.conversation-layout{grid-template-columns:1fr;gap:18px}
+  .chat-header{flex-wrap:nowrap;padding:16px 13px}.chat-header p{font-size:11px}.chat-header .language{width:auto;margin:0 0 0 auto}.language select{font-size:12px;max-width:110px}
+  .chat-log{padding:15px}.bubble{max-width:96%;font-size:14px}.bubble .citation{font-size:12px}.chat-suggestions button{min-height:42px}.chat-foot{font-size:12px}
+  .handoff-card{padding:20px}.request-progress{flex-direction:column;align-items:stretch;padding:20px}.request-progress h3{font-size:22px}.customer-mailbox{padding:20px}
+  .section-title{flex-wrap:wrap}.section-title h3{font-size:22px}.desk-stats{grid-template-columns:1fr 1fr;gap:10px}.stat span{font-size:12px}
+  .queue-filters label{flex:1;flex-direction:column;align-items:stretch;gap:5px}.queue-filters select{width:100%;font-size:16px}.work-form select{font-size:16px}
+  .detail-top{flex-wrap:wrap;gap:8px}.detail-top .status{margin-top:0}.overdue-notice{flex-direction:column;gap:10px}.overdue-notice .button{font-size:13px}
+  .quote-line{grid-template-columns:minmax(0,1fr) 57px 73px 26px;gap:6px}.quote-line input{padding:9px 6px;font-size:16px}.quote-line label{font-size:11px}
+  .quote-table{font-size:13px}.quote-table th,.quote-table tfoot th{font-size:11px}.saved-quote{padding:16px}.customer-quote h4{font-size:32px}
+  .quote-decisions{flex-direction:column;gap:12px}.quote-decisions>.button{width:100%}.quote-question{width:100%;margin-top:0}
+  .crm-detail>summary span{display:block;margin:5px 0 0 18px}.customer-record-stats span{font-size:11px}.customer-record-stats{gap:7px}
+  input,textarea,select,.chat-compose input{font-size:16px}.footer{font-size:12px}.toast{font-size:13px}
+}
+@media(max-width:430px){.hero h1{font-size:43px}.chat-header{flex-wrap:wrap}.chat-header .language{margin-left:41px;width:calc(100% - 41px)}.language select{max-width:100%}.customer-mailbox{padding:17px}.quote-table{font-size:12px}.verification-number small{display:block;margin:7px 0 0}.brand-sub{font-size:8px}}

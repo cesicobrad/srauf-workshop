@@ -7,7 +7,7 @@ request and reply is saved, so nothing is lost when a connection fails.
 
 Šrauf, its staff and customers are fictional. It's a portfolio demo that runs locally.
 
-**Watch it:** [90-second walkthrough](https://cesicobrad.github.io/assets/video/srauf.mp4)
+**Watch it:** [90-second walkthrough](https://obradcesic.com/assets/video/srauf.mp4)
 
 ![Workshop desk](docs/preview.png)
 
